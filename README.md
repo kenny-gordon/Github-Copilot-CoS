@@ -6,7 +6,7 @@
 
 A hierarchical multi-agent governance framework for VS Code Copilot that structures complex software development workflows through clearly separated domains of authority, constitutional boundaries, and enforced quality arbitration.
 
-> Built upon [Copilot-Agent-Suite](../Github-Copilot-Atlas) with strengthened governance, stricter efficiency enforcement, and constitutional tier authorities.
+> Built upon [Github-Copilot-Atlas]([../Github-Copilot-Atlas](https://github.com/bigguy345/Github-Copilot-Atlas) with strengthened governance, stricter efficiency enforcement, and constitutional tier authorities.
 
 > **Note:** Best supported on VS Code Insiders (as of January 2026) for access to the latest agent orchestration features.
 
