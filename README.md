@@ -1,5 +1,7 @@
 # Council of the Seven
 
+![Council of the Seven Architecture](Github-Copilot-CoS.png)
+
 **A Tiered Multi-Agent Governance Framework for Structured Software Development**
 
 > *"In complex systems, order is not optional — it is structural necessity."*
