@@ -10,7 +10,7 @@ A hierarchical multi-agent governance framework for VS Code Copilot that structu
 
 > Built upon [Github-Copilot-Atlas]([../Github-Copilot-Atlas](https://github.com/bigguy345/Github-Copilot-Atlas) with strengthened governance, stricter efficiency enforcement, and constitutional tier authorities.
 
-> **Note:** Best supported on VS Code Insiders (as of January 2026) for access to the latest agent orchestration features.
+> **Note:** Best supported on VS Code 1.111.0+ for access to the latest agent orchestration features.
 
 ---
 
@@ -32,12 +32,12 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier I — Command
 **THE GRANDMASTER** (`Grandmaster.agent.md`)
-- **Model:** Claude Sonnet 4.5 (copilot)
+- **Model:** Claude Sonnet 4.6 (copilot)
 - **Domain:** Mission Authority & Orchestration
 - **Responsibilities:**
   - Define objectives and success criteria
   - Establish project constraints
-  - Orchestrate  tier-to-tier workflow
+  - Orchestrate tier-to-tier workflow
   - Manage user approval gates
 - **Constitutional Limits:**
   - Cannot implement code directly
@@ -49,7 +49,7 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier II — Strategy
 **THE WEAVER** (`Weaver.agent.md`)
-- **Model:** GPT-5.2 (copilot)
+- **Model:** GPT-5.4 (copilot)
 - **Domain:** Architecture & System Design Authority
 - **Responsibilities:**
   - Translate mission into technical blueprint
@@ -66,7 +66,7 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier III — Intelligence
 **THE ARCHIVIST** (`Archivist-subagent.agent.md`)
-- **Model:** GPT-5.2 (copilot)
+- **Model:** GPT-5.4 (copilot)
 - **Domain:** Research & Knowledge Extraction Authority
 - **Responsibilities:**
   - Extract documentation and API contracts
@@ -83,7 +83,7 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier IV — Reconnaissance
 **THE PATHBREAKER** (`Pathbreaker-subagent.agent.md`)
-- **Model:** Gemini 3 Flash (Preview) (copilot)
+- **Model:** Gemini 3 Flash (copilot)
 - **Domain:** Terrain Mapping & Codebase Exploration Authority
 - **Responsibilities:**
   - Analyze existing code (read-only)
@@ -100,7 +100,7 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier V — Execution
 **THE CONSTRUCT** (`Construct-subagent.agent.md`)
-- **Model:** Claude Sonnet 4.5 (copilot)
+- **Model:** GPT-5.3 Codex (copilot)
 - **Domain:** Implementation Authority (Backend/Core Logic)
 - **Responsibilities:**
   - Write code according to Weaver's blueprint
@@ -117,7 +117,7 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier VI — Refinement
 **THE ARTISAN** (`Artisan-subagent.agent.md`)
-- **Model:** Gemini 3 Pro (Preview) (copilot)
+- **Model:** Gemini 3.1 Pro (copilot)
 - **Domain:** UX/UI & Presentation Authority
 - **Responsibilities:**
   - Improve usability and accessibility
@@ -133,7 +133,7 @@ The Council of the Seven addresses the challenges of monolithic execution models
 
 ### Tier VII — Arbitration
 **THE ARBITER** (`Arbiter-subagent.agent.md`)
-- **Model:** GPT-5.2 (copilot)
+- **Model:** GPT-5.4 (copilot)
 - **Domain:** Final Quality Gate & Acceptance Authority
 - **Responsibilities:**
   - Enforce architectural alignment
@@ -244,9 +244,6 @@ cd Copilot-Agent-Suite/Github-Copilot-CoS
 
 # Install Council agents
 .\install-cos-agents.ps1
-
-# Or install to VS Code Insiders
-.\install-cos-agents.ps1 -Insiders
 ```
 
 ### Option 2: Manual Install (All Platforms)
@@ -261,13 +258,18 @@ cd Copilot-Agent-Suite/Github-Copilot-CoS
    - **macOS:** `~/Library/Application Support/Code/User/prompts/`
    - **Linux:** `~/.config/Code/User/prompts/`
 
-   Copy these files: `Grandmaster.agent.md`, `Weaver.agent.md`, `Archivist-subagent.agent.md`, `Pathbreaker-subagent.agent.md`, `Construct-subagent.agent.md`, `Artisan-subagent.agent.md`, `Arbiter-subagent.agent.md`
+   Copy these files: `Grandmaster.agent.md`, `Weaver.agent.md`, `Archivist-subagent.agent.md`, `Pathbreaker-subagent.agent.md`, `Construct-subagent.agent.md`, `Artisan-subagent.agent.md`, `Arbiter-subagent.agent.md`, `Janitor-subagent.agent.md`
+
+> **Agent Visibility:** Only **Grandmaster**, **Weaver**, and **Janitor** appear in the agent picker (`@` invocation). All other tiers (Archivist, Pathbreaker, Construct, Artisan, Arbiter) are internal subagents — they are invoked automatically by the orchestrating agents, not directly by users. This is by design; they are not listed in the dropdown.
 
 3. **Reload VS Code** to recognize the Council
 
 ---
 
 ## Usage
+
+> **Which agents can you invoke directly?**
+> Only `@Grandmaster`, `@Weaver`, and `@Janitor` appear in the agent dropdown. Archivist, Pathbreaker, Construct, Artisan, and Arbiter are internal subagents — they are dispatched automatically by the orchestrating agents.
 
 ### Planning with Weaver (Tier II - Strategy)
 
@@ -301,25 +303,35 @@ Grandmaster will:
 
 ### Research with Archivist (Tier III - Intelligence)
 
-```
-@Archivist research how the authentication layer is structured
-```
+Archivist is an **internal subagent** — it is dispatched automatically by Grandmaster or Weaver when research is needed. It is not directly invocable. Grandmaster will invoke it when:
+- Understanding an unfamiliar subsystem
+- Extracting API contracts or dependency constraints
+- Validating standards before implementation
 
-Archivist will:
-- Extract API contracts and patterns
-- Identify constraints and dependencies
-- Return structured findings (output budget: max 10 files, 5 bullets per section)
+### Terrain Mapping with Pathbreaker (Tier IV - Reconnaissance)
 
-### Direct Exploration with Pathbreaker (Tier IV - Reconnaissance)
-
-```
-@Pathbreaker find all usages of the UserAuth class
-```
-
-Pathbreaker will:
+Pathbreaker is an **internal subagent** — automatically invoked by Grandmaster, Weaver, Construct, or Artisan whenever a task touches more than 3 files. It is not directly invocable. It will:
 - Launch 3-10 parallel searches (mandatory)
 - Map dependencies and file structures
 - Return compact, high-signal results (max 15 files)
+
+### Repository Hygiene with Janitor
+
+```
+@Janitor
+```
+
+or with a specific scope:
+
+```
+@Janitor Perform repository hygiene on the plans/ directory
+```
+
+Janitor will:
+1. Survey the repository (or scoped area) for clutter, stale branches, duplicate plans
+2. Produce a written audit report before touching anything
+3. Wait for confirmation, then execute cleanup
+4. Report what was deleted, archived, consolidated, or preserved
 
 ---
 
