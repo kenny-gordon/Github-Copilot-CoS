@@ -375,6 +375,30 @@ The Council of the Seven relies on VS Code agent hooks, tool-approval policies, 
 
 ---
 
+### Optional: MCP Auto-Start (Experimental)
+
+```json
+{
+  "chat.mcp.autoStart": true
+}
+```
+
+> Automatically (re)starts MCP servers when their configuration changes. Ensures the `context7`, `playwright`, and `pylanceMcp` tool namespaces used by Archivist, Construct, and Artisan are ready without requiring manual server restarts mid-session. Without this, MCP tool calls can silently fail after a `.vscode/mcp.json` update during long Council runs.
+
+---
+
+### Optional: Enhanced Codebase Search (Experimental)
+
+```json
+{
+  "github.copilot.chat.codesearch.enabled": true
+}
+```
+
+> Enables semantic workspace search for richer results from `search/codebase` queries. Directly improves Pathbreaker's terrain mapping (Tier IV) and Archivist's knowledge extraction (Tier III) by surfacing semantically relevant code matches beyond simple text search.
+
+---
+
 ### Complete Settings Block
 
 ```json
@@ -399,7 +423,9 @@ The Council of the Seven relies on VS Code agent hooks, tool-approval policies, 
   "chat.useCustomizationsInParentRepositories": true,
   "github.copilot.chat.organizationCustomAgents.enabled": true,
   "github.copilot.chat.tools.memory.enabled": true,
-  "chat.tools.terminal.enforceTimeoutFromModel": true
+  "chat.tools.terminal.enforceTimeoutFromModel": true,
+  "chat.mcp.autoStart": true,
+  "github.copilot.chat.codesearch.enabled": true
 }
 ```
 
