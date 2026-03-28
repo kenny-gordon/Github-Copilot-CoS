@@ -10,7 +10,7 @@ A hierarchical multi-agent governance framework for VS Code Copilot that structu
 
 > Built upon [Github-Copilot-Atlas]([../Github-Copilot-Atlas](https://github.com/bigguy345/Github-Copilot-Atlas) with strengthened governance, stricter efficiency enforcement, and constitutional tier authorities.
 
-> **Note:** Best supported on VS Code 1.111.0+ for access to the latest agent orchestration features.
+> **Note:** Best supported on VS Code 1.113+ for access to the latest agent orchestration features.
 
 ---
 
@@ -235,22 +235,11 @@ This creates a balanced power structure, preventing centralized instability.
 
 ## Installation
 
-### Option 1: Automated Install (Windows)
-
-```powershell
-# Clone the repository
-git clone https://github.com/bigguy345/Copilot-Agent-Suite.git
-cd Copilot-Agent-Suite/Github-Copilot-CoS
-
-# Install Council agents
-.\install-cos-agents.ps1
-```
-
-### Option 2: Manual Install (All Platforms)
+### Option 1: Manual Install (All Platforms)
 
 1. **Clone or download this repository:**
    ```bash
-   git clone https://github.com/bigguy345/Copilot-Agent-Suite.git
+   git clone https://github.com/kenny-gordon/Github-Copilot-CoS.git
    ```
 
 2. **Copy agent files to VS Code User prompts directory:**
@@ -274,11 +263,14 @@ The Council of the Seven relies on VS Code agent hooks, tool-approval policies, 
 
 ```json
 {
-  "chat.useCustomAgentHooks": true
+  "chat.useCustomAgentHooks": true,
+  "chat.subagents.allowInvocationsFromSubagents": true
 }
 ```
 
-> **Required.** Enables agent hook enforcement. Without this, per-agent tool restrictions (e.g., Weaver's plan-directory-only rule, Pathbreaker's read-only guard) cannot be enforced at the platform level.
+> **Required.** `chat.useCustomAgentHooks` enables agent hook enforcement. Without this, per-agent tool restrictions (e.g., Weaver's plan-directory-only rule, Pathbreaker's read-only guard) cannot be enforced at the platform level.
+>
+> `chat.subagents.allowInvocationsFromSubagents` (VS Code 1.113+) allows subagents to invoke other subagents. Without this, Archivist, Construct, and Artisan cannot dispatch Pathbreaker internally — breaking multi-tier delegation.
 
 ---
 
@@ -388,6 +380,7 @@ The Council of the Seven relies on VS Code agent hooks, tool-approval policies, 
 ```json
 {
   "chat.useCustomAgentHooks": true,
+  "chat.subagents.allowInvocationsFromSubagents": true,
   "chat.tools.autoApprove": false,
   "chat.tools.terminal.autoApprove": {
     "/^git\\s+(status|diff|log|show)\\b/": true,
