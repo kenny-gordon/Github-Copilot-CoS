@@ -1,4 +1,4 @@
-# Council of the Seven
+﻿# Council of the Seven
 
 ![Council of the Seven Architecture](Github-Copilot-CoS.png)
 
@@ -266,6 +266,151 @@ cd Copilot-Agent-Suite/Github-Copilot-CoS
 
 ---
 
+## Recommended VS Code Settings
+
+The Council of the Seven relies on VS Code agent hooks, tool-approval policies, and terminal behavior for safe, predictable operation. Apply the following settings in your workspace `.vscode/settings.json` (or user `settings.json`) for the best experience.
+
+### Required
+
+```json
+{
+  "chat.useCustomAgentHooks": true
+}
+```
+
+> **Required.** Enables agent hook enforcement. Without this, per-agent tool restrictions (e.g., Weaver's plan-directory-only rule, Pathbreaker's read-only guard) cannot be enforced at the platform level.
+
+---
+
+### Safer Tool Approval (Recommended)
+
+```json
+{
+  "chat.tools.autoApprove": false,
+  "chat.tools.terminal.autoApprove": {
+    "/^git\\s+(status|diff|log|show)\\b/": true,
+    "/^npm\\s+(install|test|run\\s+(build|lint|typecheck|test))\\b/": true,
+    "/^npx\\s+vitest\\b/": true,
+    "del": false,
+    "rm": false,
+    "rmdir": false,
+    "git reset --hard": false,
+    "/^Remove-Item\\b/": false,
+    "/^git\\s+clean\\b/": false
+  }
+}
+```
+
+> The default `chat.tools.autoApprove: true` silently approves every agent tool call, including destructive terminal commands. Setting it to `false` and replacing it with a targeted terminal allowlist keeps the agent flow smooth while blocking dangerous operations.
+>
+> - Keys set to `true` are auto-approved (regex or exact command match).
+> - Keys set to `false` are always prompted (explicit block).
+> - Extend the regex allowlist with additional safe patterns for your workflow.
+
+---
+
+### Terminal Profile (Windows)
+
+```json
+{
+  "chat.tools.terminal.terminalProfile.windows": "PowerShell"
+}
+```
+
+> PowerShell provides better shell integration than `cmd`, improving command detection, output capture, and agent reliability on Windows.
+
+---
+
+### Visibility & Transparency
+
+```json
+{
+  "chat.tools.todos.showWidget": true,
+  "chat.agent.thinking.collapsedTools": false
+}
+```
+
+> - `todos.showWidget` — Shows the todo progress widget during multi-phase Council runs so you can track which tier is active.
+> - `collapsedTools: false` — Expands tool calls by default, making every agent action fully auditable.
+
+---
+
+### Multi-Repo & Customization Discovery
+
+```json
+{
+  "chat.useCustomizationsInParentRepositories": true
+}
+```
+
+> Ensures agent instruction files and custom hooks at the parent repository level are discovered in monorepos and nested workspaces.
+
+---
+
+### Optional: Organization Agents
+
+```json
+{
+  "github.copilot.chat.organizationCustomAgents.enabled": true
+}
+```
+
+> Enable if your GitHub organization publishes shared Council agents or instruction files. Safe to leave `false` if not applicable.
+
+---
+
+### Optional: Memory Tool
+
+```json
+{
+  "github.copilot.chat.tools.memory.enabled": true
+}
+```
+
+> Enables the memory tool so agents can persist cross-session context — research findings, plan status, workflow preferences. Useful for long-running Council cycles across multiple sessions.
+
+---
+
+### Optional: Terminal Timeout Guard
+
+```json
+{
+  "chat.tools.terminal.enforceTimeoutFromModel": true
+}
+```
+
+> Prevents agent-issued terminal commands from hanging indefinitely. The model's timeout hint is enforced, improving responsiveness during long build or test runs.
+
+---
+
+### Complete Settings Block
+
+```json
+{
+  "chat.useCustomAgentHooks": true,
+  "chat.tools.autoApprove": false,
+  "chat.tools.terminal.autoApprove": {
+    "/^git\\s+(status|diff|log|show)\\b/": true,
+    "/^npm\\s+(install|test|run\\s+(build|lint|typecheck|test))\\b/": true,
+    "/^npx\\s+vitest\\b/": true,
+    "del": false,
+    "rm": false,
+    "rmdir": false,
+    "git reset --hard": false,
+    "/^Remove-Item\\b/": false,
+    "/^git\\s+clean\\b/": false
+  },
+  "chat.tools.terminal.terminalProfile.windows": "PowerShell",
+  "chat.tools.todos.showWidget": true,
+  "chat.agent.thinking.collapsedTools": false,
+  "chat.useCustomizationsInParentRepositories": true,
+  "github.copilot.chat.organizationCustomAgents.enabled": true,
+  "github.copilot.chat.tools.memory.enabled": true,
+  "chat.tools.terminal.enforceTimeoutFromModel": true
+}
+```
+
+---
 ## Usage
 
 > **Which agents can you invoke directly?**
